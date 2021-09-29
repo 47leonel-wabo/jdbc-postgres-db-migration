@@ -1,19 +1,33 @@
 package com.work.beat.talent.jdbcpostgresdbmigration.movie;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public class MovieDataAccessService implements MovieDao {
+
+    private final JdbcTemplate mJdbcTemplate;
+
+    public MovieDataAccessService(JdbcTemplate jdbcTemplate) {
+        mJdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public Integer insertMovie(Movie movie) {
-        return null;
+        String sqlQuery = """
+                INSERT INTO movie(name, release_date) VALUES (?, ?);
+                """;
+        return mJdbcTemplate.update(sqlQuery, movie.name(), movie.releaseDate());
     }
 
     @Override
     public Iterable<Movie> fetchMovies() {
-        return null;
+        String sqlQuery = """
+                SELECT id, name, release_date FROM movie LIMIT 100;
+                """;
+        return mJdbcTemplate.query(sqlQuery, new MovieRowMapper());
     }
 
     @Override
