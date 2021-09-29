@@ -4,3 +4,5 @@ name text not null,
 release_date date not null,
 unique (name)
 );
+
+-- This follow PostgreSQL syntax
