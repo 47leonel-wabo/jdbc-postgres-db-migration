@@ -15,10 +15,16 @@ public class MovieDataAccessService implements MovieDao {
         mJdbcTemplate = jdbcTemplate;
     }
 
+    /*
+     * For any operation which alter data in database, use "update()" method from jdbcTemplate
+     * And for reading data use "query()" method from jdbcTemplate
+     */
+
     @Override
     public Integer insertMovie(Movie movie) {
         String sqlQuery = """
-                INSERT INTO movie(name, release_date) VALUES (?, ?);
+                INSERT INTO movie(name, release_date)
+                VALUES (?, ?);
                 """;
         return mJdbcTemplate.update(sqlQuery, movie.name(), movie.releaseDate());
     }
@@ -26,7 +32,8 @@ public class MovieDataAccessService implements MovieDao {
     @Override
     public Iterable<Movie> fetchMovies() {
         String sqlQuery = """
-                SELECT id, name, release_date FROM movie LIMIT 100;
+                SELECT id, name, release_date
+                FROM movie LIMIT 100;
                 """;
         return mJdbcTemplate.query(sqlQuery, new MovieRowMapper());
     }
@@ -34,7 +41,8 @@ public class MovieDataAccessService implements MovieDao {
     @Override
     public Optional<Movie> fetchMovieById(Integer moveId) {
         String sqlQuery = """
-                SELECT id, name, release_date FROM movie WHERE id = ?;
+                SELECT id, name, release_date
+                FROM movie WHERE id = ?;
                 """;
         List<Movie> movieList = mJdbcTemplate.query(sqlQuery, new MovieRowMapper(), moveId);
         return movieList.stream().findFirst();
@@ -42,11 +50,31 @@ public class MovieDataAccessService implements MovieDao {
 
     @Override
     public Movie updateMovie(Integer movieId, Movie movieData) {
-        return null;
+        String sqlQuery = """
+                UPDATE movie
+                SET name = ?, actors = ?, release_date = ?
+                WHERE id = ?;
+                """;
+        // 'i' represents the number of updated rows
+        int i = mJdbcTemplate.update(
+                sqlQuery,
+                movieData.name(),
+                movieData.actors(),
+                movieData.releaseDate(),
+                movieId
+        );
+        if (i == 1) {
+            return movieData;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Integer deleteMovie(Integer movieId) {
-        throw new UnsupportedOperationException("Bla bla!");
+        String sqlQuery = """
+                DELETE FROM movie WHERE id = ?;
+                """;
+        return mJdbcTemplate.update(sqlQuery, movieId);
     }
 }

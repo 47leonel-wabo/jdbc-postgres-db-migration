@@ -27,7 +27,14 @@ public class MovieController {
         return mMovieService.addMovie(movie);
     }
 
-    // TODO 4: Delete movie by id (void returned)
-    // TODO 5: Of course update movie
+    @DeleteMapping(path = {"/{id}"})
+    public void deleteMoviById(final @PathVariable("id") Integer id) {
+        mMovieService.removeMovie(id);
+    }
+
+    @PutMapping(path = {"/{id}"})
+    public Movie updateMovieDetails(final @PathVariable("id") Integer id, final @RequestBody Movie movie) {
+        return mMovieService.updateMovieData(id, movie);
+    }
 
 }
