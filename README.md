@@ -7,5 +7,5 @@ Basic demo project on database migration with Flyway.
 
 ## Credit
 
-[amigoscode](amigoscode.com/)
+[amigoscode](https://amigoscode.com/)
 Happy coding 🔥
