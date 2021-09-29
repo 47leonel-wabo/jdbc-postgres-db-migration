@@ -3,6 +3,7 @@ package com.work.beat.talent.jdbcpostgresdbmigration.movie;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,7 +33,11 @@ public class MovieDataAccessService implements MovieDao {
 
     @Override
     public Optional<Movie> fetchMovieById(Integer moveId) {
-        return Optional.empty();
+        String sqlQuery = """
+                SELECT id, name, release_date FROM movie WHERE id = ?;
+                """;
+        List<Movie> movieList = mJdbcTemplate.query(sqlQuery, new MovieRowMapper(), moveId);
+        return movieList.stream().findFirst();
     }
 
     @Override

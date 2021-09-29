@@ -6,21 +6,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = {"/api/v1/movies"})
 public class MovieController {
 
-    private final MovieDao mMovieDao;
+    private final MovieService mMovieService;
 
-    public MovieController(MovieDao movieDao) {
-        mMovieDao = movieDao;
+    public MovieController(MovieService movieService) {
+        mMovieService = movieService;
     }
 
     @GetMapping
     public Iterable<Movie> getAllMovies() {
-        return mMovieDao.fetchMovies();
+        return mMovieService.getMovies();
     }
-    // TODO 2: Get movie by id
+
+    @GetMapping(path = {"/{movieId}"})
+    public Movie getMovieById(final @PathVariable("movieId") Integer movieId) {
+        return mMovieService.getMovieById(movieId);
+    }
 
     @PostMapping
     public Integer addNewMovie(@RequestBody final Movie movie) {
-        return mMovieDao.insertMovie(movie);
+        return mMovieService.addMovie(movie);
     }
 
     // TODO 4: Delete movie by id (void returned)
